@@ -136,6 +136,13 @@
     object-position: center;
     display: block;
   }
+  @media (max-width: 720px) {
+    .hero__media img {
+      object-fit: contain;
+      object-position: center top;
+      background: #000;
+    }
+  }
   .hero__vignette {
     position: absolute; inset: 0;
     z-index: 2;
