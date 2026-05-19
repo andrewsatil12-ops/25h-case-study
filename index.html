@@ -1634,11 +1634,11 @@
     .can-rule__text { font-size: 11px; }
 
     /* Color system */
-    #color-system { padding: 60px 20px 60px; }
+    #color-system { padding: 60px 20px 60px; overflow: hidden; }
     .palette-global { margin-bottom: 56px; }
-    .pg-row--4 { grid-template-columns: repeat(2,1fr); gap: 12px; }
-    .pg-row--3 { grid-template-columns: repeat(2,1fr); gap: 12px; }
-    .gs-swatch__color { min-height: 80px; }
+    .pg-row--4, .pg-row--3 { grid-template-columns: 1fr; gap: 10px; }
+    .gs-swatch { flex-direction: column; gap: 10px; }
+    .gs-swatch__color { width: 100%; aspect-ratio: unset; height: 56px; min-height: unset; border-radius: 10px; }
     .gs-swatch__name { font-size: 11px; }
     .gs-swatch__hex, .gs-swatch__desc { font-size: 8px; }
     .palette-flavors { gap: 0; }
