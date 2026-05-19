@@ -1,0 +1,2791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25h — the hour that doesn't exist</title>
+<template id="__bundler_thumbnail" data-bg-color="#000000">
+  <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="500" fill="#000000"/>
+    <!-- Brand wordmark -->
+    <text x="400" y="230" font-family="sans-serif" font-weight="700" font-size="120" fill="#e9e7e2" text-anchor="middle" letter-spacing="-6">25h</text>
+    <!-- Tagline -->
+    <text x="400" y="278" font-family="monospace" font-size="13" fill="#4a4844" text-anchor="middle" letter-spacing="6">THE HOUR THAT DOESN'T EXIST</text>
+    <!-- Flavor dots -->
+    <circle cx="334" cy="318" r="5" fill="#c5677a"/>
+    <circle cx="354" cy="318" r="5" fill="#6aa3c4"/>
+    <circle cx="374" cy="318" r="5" fill="#6f8a4f"/>
+    <circle cx="394" cy="318" r="5" fill="#c98a4b"/>
+    <!-- Gradient accent line -->
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#c5677a"/>
+        <stop offset="33%" stop-color="#6f8a4f"/>
+        <stop offset="66%" stop-color="#c98a4b"/>
+        <stop offset="100%" stop-color="#6aa3c4"/>
+      </linearGradient>
+    </defs>
+    <rect x="280" y="340" width="240" height="1" fill="url(#g)" opacity="0.5"/>
+  </svg>
+</template>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;700&family=JetBrains+Mono:wght@300;400&family=Space+Grotesk:wght@300;400;500&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --bg-2: #050505;
+    --fg: #e9e7e2;
+    --fg-dim: #8a8780;
+    --fg-faint: #4a4844;
+    --line: rgba(233, 231, 226, 0.08);
+    --sakura: #c5677a;
+    --melao: #6f8a4f;
+    --damasco: #c98a4b;
+    --frost: #6aa3c4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  body { line-height: 1.4; letter-spacing: -0.01em; }
+
+  ::selection { background: var(--fg); color: var(--bg); }
+
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+  }
+
+  /* ───── NAV ───── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 40px;
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+  .nav > * { pointer-events: auto; }
+  .nav__logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav__links {
+    display: flex; gap: 24px;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: calc(100vw - 120px);
+  }
+  .nav__links::-webkit-scrollbar { display: none; }
+  .nav__links a {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity .3s ease;
+  }
+  .nav__links a:hover { opacity: 1; }
+
+  @media (max-width: 720px) {
+    .nav { padding: 18px 22px; }
+    .nav__links { gap: 16px; }
+    .nav__links a { font-size: 9px; }
+  }
+
+  /* ───── HERO ───── */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh; min-height: 640px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+  }
+  .hero__media {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+  }
+  .hero__media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .hero__vignette {
+    position: absolute; inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.85) 100%),
+      radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,0.4) 90%);
+    pointer-events: none;
+  }
+  .hero__inner {
+    position: relative; z-index: 3;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 40px;
+  }
+  .hero__copy h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: clamp(2.4rem, 6.2vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #f4f1eb;
+    text-wrap: balance;
+  }
+  .hero__copy h1 .dim { color: rgba(244, 241, 235, 0.45); }
+  .hero__meta {
+    justify-self: end;
+    text-align: right;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .hero__meta .label { color: var(--fg-dim); }
+  .hero__meta .val { color: var(--fg); }
+
+  .hero__topinfo {
+    position: absolute; top: 0; left: 0; right: 0;
+    z-index: 3;
+    padding: 90px 40px 0;
+    display: flex; justify-content: space-between;
+    pointer-events: none;
+  }
+  .hero__topinfo > * { pointer-events: auto; }
+
+  @media (max-width: 720px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+      padding: 24px;
+      gap: 24px;
+    }
+    .hero__meta { justify-self: start; text-align: left; }
+    .hero__topinfo { padding: 70px 22px 0; }
+    .hero__copy h1 { font-size: clamp(2.2rem, 11vw, 4rem); }
+  }
+
+  /* picture/source handles mobile swap — no class toggling needed */
+  .hero__media img { display: block; }
+
+  /* ───── SCROLL HINT ───── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: 50%; transform: translateX(-50%);
+    z-index: 4;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--fg-dim);
+  }
+  .scroll-hint__line {
+    width: 1px; height: 36px;
+    background: linear-gradient(180deg, transparent, var(--fg-dim));
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ───── SECTION SHELL ───── */
+  section.dobra {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 120px 40px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid var(--line);
+  }
+  section.dobra::before {
+    /* subtle film grain feel via radial */
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.025), transparent 50%);
+    pointer-events: none;
+  }
+  .dobra__eyebrow {
+    position: absolute;
+    top: 60px; left: 40px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .dobra__eyebrow .num { color: var(--fg-faint); }
+  .dobra__eyebrow .bar { width: 28px; height: 1px; background: var(--fg-faint); }
+  .dobra__eyebrow .label { color: var(--fg); letter-spacing: 0.16em; }
+
+  .dobra__inner {
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* big stacked sentences */
+  .stack {
+    display: flex; flex-direction: column;
+    gap: 0;
+  }
+  .stack__line {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(2rem, 5.4vw, 5.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+  .stack__line.dim { color: var(--fg-dim); }
+  .stack__line .accent { font-style: italic; font-weight: 300; color: var(--fg); }
+
+  /* ───── CONCEPT (left aligned) ───── */
+  #concept {
+    background: var(--bg);
+  }
+  #concept .dobra__inner { max-width: 1200px; }
+
+  /* small side meta column on wide screens */
+  .with-meta {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 80px;
+    align-items: end;
+  }
+  .side-meta {
+    display: flex; flex-direction: column; gap: 18px;
+    border-left: 1px solid var(--line);
+    padding-left: 20px;
+    padding-bottom: 4px;
+  }
+  .side-meta .row { display: flex; flex-direction: column; gap: 4px; }
+  .side-meta .row .v { color: var(--fg); font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.04em; }
+  @media (max-width: 900px) {
+    .with-meta { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  /* ───── IDENTITY (right aligned) ───── */
+  #identity {
+    background: var(--bg-2);
+  }
+  #identity .stack { text-align: right; align-items: flex-end; }
+  #identity .with-meta {
+    grid-template-columns: 200px 1fr;
+  }
+  #identity .side-meta {
+    border-left: none;
+    border-right: 1px solid var(--line);
+    padding-left: 0;
+    padding-right: 20px;
+    text-align: right;
+    align-items: flex-end;
+  }
+  @media (max-width: 900px) {
+    #identity .with-meta { grid-template-columns: 1fr; }
+    #identity .stack { text-align: left; align-items: flex-start; }
+    #identity .side-meta { border-right: none; border-left: 1px solid var(--line); padding-right: 0; padding-left: 20px; text-align: left; align-items: flex-start; }
+  }
+
+  /* ───── FLAVORS INTRO ───── */
+  #flavors-intro {
+    background: var(--bg);
+    padding: 120px 0 0;
+    overflow: hidden;
+  }
+  #flavors-intro .dobra__eyebrow {
+    left: 40px;
+  }
+  .flavors-intro__head {
+    padding: 0 40px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 40px;
+  }
+  .flavors-intro__title .stack__line { font-weight: 200; font-size: clamp(2rem, 5.4vw, 5rem); }
+  .flavors-intro__title .stack__line:last-child {
+    background: linear-gradient(90deg, var(--sakura), var(--melao), var(--damasco), var(--frost));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .flavors-intro__caption {
+    justify-self: end;
+    max-width: 320px;
+    color: var(--fg-dim);
+    font-size: 14px;
+    line-height: 1.55;
+    text-align: right;
+  }
+
+  .lineup {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+  .lineup picture {
+    display: block;
+    width: 100%; height: 100%;
+  }
+  .lineup img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transform: scale(1.05);
+    will-change: transform;
+  }
+  .lineup__legend {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.85));
+  }
+  .lineup__legend .item {
+    display: flex; flex-direction: column; gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 12px;
+  }
+  .lineup__legend .item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-bottom: 8px;
+    animation: dot-ripple 2.2s ease-out infinite;
+  }
+  @keyframes dot-ripple {
+    0%   { box-shadow: 0 0 0 0 var(--pulse-color, rgba(255,255,255,0.5)); }
+    60%  { box-shadow: 0 0 0 8px rgba(0,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+  }
+  .lineup__legend .item .name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .lineup__legend .item .culture {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  @media (max-width: 720px) {
+    .flavors-intro__head { grid-template-columns: 1fr; padding: 0 22px 40px; }
+    .flavors-intro__caption { justify-self: start; text-align: left; max-width: none; }
+    .lineup__legend { grid-template-columns: repeat(2, 1fr); padding: 18px 22px; gap: 14px 18px; }
+    .lineup { aspect-ratio: 3 / 4; }
+  }
+
+  /* ───── REVEAL ANIMATION ───── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+  }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* staggered children */
+  .reveal--stagger > * {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal--stagger.in > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: none; }
+  .reveal--stagger.in > *:nth-child(2) { transition-delay: 140ms; opacity: 1; transform: none; }
+  .reveal--stagger.in > *:nth-child(3) { transition-delay: 280ms; opacity: 1; transform: none; }
+  .reveal--stagger.in > *:nth-child(4) { transition-delay: 420ms; opacity: 1; transform: none; }
+  .reveal--stagger.in > *:nth-child(5) { transition-delay: 560ms; opacity: 1; transform: none; }
+
+  /* ───── FOOTER ───── */
+  .footer {
+    padding: 60px 40px 32px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--fg-dim);
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer .footer__brand {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.04em;
+    color: var(--fg);
+  }
+  @media (max-width: 720px) {
+    .footer { padding: 40px 22px 24px; }
+    section.dobra { padding: 100px 22px; }
+    .dobra__eyebrow { left: 22px; top: 50px; }
+  }
+
+  /* parallax helpers */
+  [data-parallax] { will-change: transform; }
+
+  /* ───── WORLD / UGC ───── */
+  #world-ugc {
+    background: #0E0A1A;
+    padding: 100px 0 80px;
+    border-top: 1px solid rgba(233,231,226,0.06);
+    overflow: hidden;
+  }
+  .world-header {
+    padding: 0 40px 56px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .world-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #4a4844;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .world-label .bar { width: 28px; height: 1px; background: #4a4844; display: inline-block; }
+  .world-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    line-height: 0.96;
+    letter-spacing: -0.048em;
+    color: #e9e7e2;
+    margin-bottom: 18px;
+  }
+  .world-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4844;
+  }
+
+  /* track */
+  .world-track {
+    display: flex;
+    gap: 16px;
+    padding: 8px 10vw;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    user-select: none;
+  }
+  .world-track::-webkit-scrollbar { display: none; }
+  .world-track.is-grabbing { cursor: grabbing; }
+
+  /* cards */
+  .world-card {
+    flex-shrink: 0;
+    position: relative;
+    height: clamp(360px, 76vh, 700px);
+    aspect-ratio: 4/5;
+    max-width: 80vw;
+    border-radius: 16px;
+    overflow: hidden;
+    scroll-snap-align: center;
+    transform: scale(0.92);
+    opacity: 0.45;
+    transition: transform 400ms ease, opacity 400ms ease;
+  }
+  .world-card.wc-active { transform: scale(1); opacity: 1; }
+  .world-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    pointer-events: none;
+  }
+  .world-card__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(14,10,26,0.96) 100%);
+    pointer-events: none;
+  }
+  .world-card__caption {
+    position: absolute;
+    bottom: 28px; left: 24px; right: 24px;
+    z-index: 1;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .world-card__flavor {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(233,231,226,0.5);
+  }
+  .world-card__desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(1.2rem, 2.8vw, 1.8rem);
+    letter-spacing: -0.035em;
+    color: #e9e7e2;
+    line-height: 1.05;
+  }
+
+  /* progress */
+  .world-progress {
+    height: 1px;
+    background: rgba(233,231,226,0.08);
+    margin: 36px 40px 0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .world-progress__fill {
+    height: 100%;
+    background: rgba(233,231,226,0.45);
+    width: 25%;
+    border-radius: 99px;
+    transition: width 250ms ease;
+  }
+
+  /* custom scrollbar */
+  .world-scrollbar {
+    height: 3px;
+    background: #1E1628;
+    border-radius: 2px;
+    margin: 20px 10vw 0;
+    position: relative;
+    cursor: pointer;
+  }
+  .world-scrollbar__thumb {
+    height: 100%;
+    background: linear-gradient(90deg, #E040FB, #7C3AED);
+    border-radius: 2px;
+    position: absolute;
+    top: 0; left: 0;
+    cursor: grab;
+    transition: box-shadow 200ms ease;
+    min-width: 40px;
+  }
+  .world-scrollbar__thumb:hover {
+    box-shadow: 0 0 8px rgba(224,64,251,0.6);
+  }
+  .world-scrollbar__thumb.ws-dragging {
+    cursor: grabbing;
+    box-shadow: 0 0 12px rgba(224,64,251,1.0), 0 0 24px rgba(124,58,237,0.5);
+    transition: none;
+  }
+
+  /* progress (kept as card counter above) */
+  .world-progress {
+    height: 1px;
+    background: rgba(233,231,226,0.08);
+    margin: 36px 40px 0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .world-progress__fill {
+    height: 100%;
+    background: rgba(233,231,226,0.5);
+    width: 25%;
+    border-radius: 99px;
+    transition: width 250ms ease;
+  }
+
+  @media (max-width: 720px) {
+    #world-ugc { padding: 70px 0 56px; }
+    .world-header { padding: 0 22px 36px; }
+    .world-progress { margin: 24px 22px 0; }
+    .world-scrollbar { display: none; }
+    .world-card {
+      height: auto;
+      width: 80vw;
+      max-width: 80vw;
+      aspect-ratio: 9/16;
+    }
+    .world-track { padding: 8px 10vw; gap: 12px; }
+  }
+  /* ───── CLOSING TIMER ───── */
+  @property --grad-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  #closing-timer {
+    background: #030303;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-top: 1px solid rgba(233,231,226,0.06);
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ct-header {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6B4F7A;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  /* gradient border wrapper */
+  .ct-border-wrap {
+    position: relative;
+    padding: 2px;
+    border-radius: 8px;
+    background: conic-gradient(from var(--grad-angle), #E040FB, #C8A800, #FF6B35, #7ECFEA, #E040FB);
+    animation: ct-rotate 4s linear infinite;
+    z-index: 1;
+  }
+  .ct-border-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -8px; border-radius: 14px;
+    background: conic-gradient(from var(--grad-angle), #E040FB, #C8A800, #FF6B35, #7ECFEA, #E040FB);
+    filter: blur(20px);
+    opacity: 0.3;
+    animation: ct-rotate 4s linear infinite, ct-glow 2s ease-in-out infinite alternate;
+    z-index: -1;
+  }
+  @keyframes ct-rotate { to { --grad-angle: 360deg; } }
+  @keyframes ct-glow {
+    from { opacity: 0.3; }
+    to { opacity: 0.6; }
+  }
+
+  .ct-inner {
+    background: #0E0A1A;
+    border-radius: 6px;
+    padding: 48px 80px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  #ct-display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    letter-spacing: 0.1em;
+    color: #F0EAF8;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 600ms ease;
+    line-height: 1;
+  }
+
+  #ct-yours {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    letter-spacing: 0.1em;
+    color: #E040FB;
+    opacity: 0;
+    position: absolute;
+    transition: opacity 600ms ease;
+    line-height: 1;
+    animation: ct-magenta-pulse 2s ease-in-out infinite;
+  }
+  @keyframes ct-magenta-pulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(224,64,251,0.4); }
+    50% { text-shadow: 0 0 40px rgba(224,64,251,0.8), 0 0 80px rgba(124,58,237,0.4); }
+  }
+
+  .ct-footer {
+    margin-top: 56px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+  }
+  .ct-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; color: #F0EAF8;
+  }
+  .ct-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #3D2E4E;
+  }
+
+  @media (max-width: 720px) {
+    .ct-inner { padding: 32px 48px; }
+  }
+
+  /* ───── COLOR SYSTEM ───── */
+  #color-system {
+    background: #0E0A1A;
+    padding: 100px 40px 120px;
+    border-top: 1px solid rgba(233,231,226,0.06);
+  }
+  .color-header {
+    max-width: 1280px; margin: 0 auto 80px;
+  }
+  .color-label {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #4a4844;
+    margin-bottom: 20px;
+  }
+  .color-label .bar { width: 28px; height: 1px; background: #4a4844; }
+  .color-title {
+    font-family: 'Inter', sans-serif; font-weight: 200;
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    line-height: 0.96; letter-spacing: -0.048em;
+    color: #e9e7e2; margin-bottom: 18px;
+  }
+  .color-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #4a4844;
+    max-width: 560px; line-height: 1.6;
+  }
+
+  /* PART 1 — global palette */
+  .palette-global {
+    max-width: 1280px; margin: 0 auto 100px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .pg-row {
+    display: grid;
+    gap: 20px;
+  }
+  .pg-row--4 { grid-template-columns: repeat(4, 1fr); }
+  .pg-row--3 { grid-template-columns: repeat(3, 1fr); }
+
+  .gs-swatch {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .gs-swatch__color {
+    width: 100%; aspect-ratio: 1/1;
+    border-radius: 12px;
+    transition: transform 300ms ease, box-shadow 300ms ease;
+    cursor: default;
+  }
+  .gs-swatch__color:hover {
+    transform: translateY(-8px) scale(1.06);
+    box-shadow: 0 20px 40px 0 var(--glow);
+  }
+  .gs-swatch__info { display: flex; flex-direction: column; gap: 4px; }
+  .gs-swatch__name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; font-size: 13px;
+    letter-spacing: -0.01em; color: #e9e7e2;
+  }
+  .gs-swatch__hex {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.06em; color: #6B4F7A;
+  }
+  .gs-swatch__desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.04em;
+    color: #6B4F7A; line-height: 1.5; margin-top: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .pg-row--4 { grid-template-columns: repeat(2, 1fr); }
+    .pg-row--3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .pg-row--4 { grid-template-columns: repeat(2, 1fr); }
+    .pg-row--3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* PART 2 — flavor palettes */
+  .palette-flavors {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .fp-row {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(233,231,226,0.06);
+  }
+  .fp-row:first-child { border-top: 1px solid rgba(233,231,226,0.06); }
+  .fp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 15px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: rgba(200,196,188,0.8);
+    line-height: 1.6;
+  }
+  .fp-swatches { display: none; } /* replaced by bar layout */
+
+  .fp-bar-wrap {
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%;
+  }
+  .fp-bar {
+    height: 48px; border-radius: 24px; width: 100%;
+    transition: transform 300ms ease, box-shadow 300ms ease;
+    cursor: default;
+  }
+  .fp-bar:hover {
+    transform: scaleX(1.02);
+    box-shadow: 0 0 20px 6px var(--glow);
+  }
+  .fp-bar-hex {
+    display: flex; justify-content: space-between;
+    padding: 0 6px;
+  }
+  .fp-bar-hex span {
+    font-family: 'Space Mono', monospace;
+    font-size: 15px; letter-spacing: 0.04em;
+    color: rgba(200,196,188,0.8); text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    #color-system { padding: 70px 22px 80px; }
+    .palette-global { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .fp-row { grid-template-columns: 1fr; gap: 16px; }
+    .fp-label { font-size: 9px; }
+    .fp-swatch__color { width: 56px; height: 56px; }
+  }
+
+  /* ───── CAN SYSTEM ───── */
+  #can-system {
+    background: #030303;
+    padding: 100px 40px 120px;
+    border-top: 1px solid rgba(233,231,226,0.06);
+  }
+  .can-system__header { max-width: 1280px; margin: 0 auto 72px; }
+  .can-system__label {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #4a4844; margin-bottom: 20px;
+  }
+  .can-system__label .bar { width: 28px; height: 1px; background: #4a4844; }
+  .can-system__title {
+    font-family: 'Inter', sans-serif; font-weight: 200;
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    line-height: 0.96; letter-spacing: -0.048em;
+    color: #e9e7e2; margin-bottom: 18px;
+  }
+  .can-system__sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #4a4844;
+    max-width: 560px; line-height: 1.6;
+  }
+  .can-system__body {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+  }
+  .can-system__img-wrap {
+    width: 100%; aspect-ratio: 4/5;
+    border-radius: 8px; overflow: hidden;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(233,231,226,0.07);
+    position: relative; cursor: zoom-in;
+  }
+  .can-system__img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center; display: block;
+  }
+  .cs-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+  }
+  .cs-placeholder__icon {
+    width: 52px; height: 52px;
+    border: 1px solid rgba(233,231,226,0.12); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(233,231,226,0.18); font-size: 22px;
+  }
+  .cs-placeholder__text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(233,231,226,0.18); text-align: center; line-height: 1.7;
+  }
+  .can-system__rules { display: flex; flex-direction: column; padding-top: 4px; }
+  .can-rule {
+    padding: 20px 0; border-bottom: 1px solid rgba(233,231,226,0.07);
+    display: grid; grid-template-columns: 20px 1fr; gap: 20px; align-items: start;
+  }
+  .can-rule:first-child { border-top: 1px solid rgba(233,231,226,0.07); }
+  .can-rule__num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.06em; color: #4a4844; padding-top: 1px;
+  }
+  .can-rule__text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; line-height: 1.7; letter-spacing: 0.025em; color: #6a6864;
+  }
+  .can-rule__text strong { color: #c8c4bc; font-weight: 400; }
+
+  @media (max-width: 900px) {
+    #can-system { padding: 70px 22px 80px; }
+    .can-system__body { grid-template-columns: 1fr; gap: 48px; }
+    .can-system__img-wrap { aspect-ratio: 3/2; }
+  }
+
+  #lightbox {
+    position: fixed; inset: 0;
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(.2,.7,.2,1);
+  }
+  #lightbox.open { opacity: 1; pointer-events: auto; }
+
+  #lb-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.93);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  #lb-img-wrap {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    max-width: 92vw; max-height: 92vh;
+  }
+
+  #lb-img {
+    display: block;
+    max-width: 92vw; max-height: 92vh;
+    width: auto; height: auto;
+    object-fit: contain;
+    border-radius: 2px;
+    transform: scale(0.94);
+    transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+  }
+  #lightbox.open #lb-img { transform: scale(1); }
+
+  #lb-close {
+    position: fixed; top: 24px; right: 28px; z-index: 3;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; width: 44px; height: 44px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 16px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    font-family: 'Inter', sans-serif; font-weight: 300;
+  }
+  #lb-close:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.6);
+    transform: rotate(90deg);
+  }
+
+  #lb-caption {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+  }
+
+  /* zoom cursor on clickable images */
+  .flavor-split__right img,
+  .flavor-split__left img,
+  .flavor-grid__portrait img,
+  .flavor-grid__square img,
+  .can-system__img-wrap img { cursor: zoom-in; }
+  .world-card { cursor: zoom-in; }
+
+  /* ───── FLAVOR DOBRA SHARED ───── */
+  .flavor-dobra {
+    padding: 0;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto auto;
+    border-top: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  /* top split: text left, can right */
+  .flavor-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .flavor-split__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 80px 60px 80px 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .flavor-split__right {
+    position: relative;
+    overflow: hidden;
+  }
+  .flavor-split__right img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transform: scale(1.06);
+    will-change: transform;
+  }
+  .flavor-split__right::after {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+
+  /* kanji bg */
+  .flavor__kanji {
+    position: absolute;
+    top: 50%; right: -0.05em;
+    transform: translateY(-50%);
+    font-size: clamp(14rem, 28vw, 26rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  .flavor__eyebrow {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 48px;
+  }
+  .flavor__eyebrow .bar { width: 28px; height: 1px; }
+  .flavor__eyebrow .num { color: var(--fg-faint); }
+
+  .flavor__title {
+    position: relative; z-index: 1;
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(2.8rem, 6.5vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin-bottom: 48px;
+    text-wrap: balance;
+  }
+
+  .flavor__copy {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .flavor__copy p {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(1.1rem, 2.2vw, 1.9rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--fg-dim);
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .flavor__copy p:first-child { color: var(--fg); font-weight: 300; }
+  .flavor__copy p:last-child { border-bottom: 1px solid var(--line); }
+
+  .flavor__claim {
+    position: relative; z-index: 1;
+    margin-top: 40px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .flavor__claim .pill {
+    display: inline-flex; align-items: center;
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    opacity: 0.7;
+  }
+
+  /* gallery: portrait + 3x3 grid side by side */
+  .flavor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: #000;
+  }
+  .flavor-grid__portrait,
+  .flavor-grid__square {
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1 / 1;
+  }
+  .flavor-grid__portrait img,
+  .flavor-grid__square img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.8s cubic-bezier(.2,.7,.2,1);
+  }
+  .flavor-grid__square img { object-position: center; }
+  .flavor-grid__portrait:hover img,
+  .flavor-grid__square:hover img { transform: scale(1.03); }
+
+  @media (max-width: 720px) {
+    .flavor-grid { grid-template-columns: 1fr; }
+    .flavor-grid__portrait { display: none; }
+    .flavor-grid__square { aspect-ratio: 1 / 1; }
+  }
+
+  /* ───── FLAVOR LORE ───── */
+  .flavor-lore {
+    padding: 100px 40px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .flavor-lore__geo {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .flavor-lore__geo .city {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 32px;
+  }
+  .flavor-lore__geo .symbol {
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .flavor-lore__geo .symbol-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+  .flavor-lore__geo .symbol-def {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--fg-dim);
+    line-height: 1.5;
+    max-width: 280px;
+    margin-top: 4px;
+  }
+  .flavor-lore__text {
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .flavor-lore__text p {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+    line-height: 1.65;
+    letter-spacing: -0.015em;
+    color: var(--fg-dim);
+  }
+  .flavor-lore__text p.highlight {
+    color: var(--fg);
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+  }
+  .flavor-lore__text p.closing {
+    color: var(--fg-dim);
+    font-style: italic;
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    margin-top: 12px;
+  }
+
+  /* rune list for Elderflower */
+  .rune-list {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 8px;
+  }
+  .rune-row {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rune-row:first-child { border-top: 1px solid var(--line); }
+  .rune-row .rune-sym {
+    font-size: 1.4rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+  .rune-row .rune-info { display: flex; flex-direction: column; gap: 3px; }
+  .rune-row .rune-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+  }
+  .rune-row .rune-meaning {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 900px) {
+    .flavor-lore { grid-template-columns: 1fr; gap: 48px; padding: 60px 22px; }
+  }
+
+  /* SAKURA specific */
+  #sakura-void {
+    background: #060204;
+  }
+  #sakura-void .flavor__kanji { color: rgba(197, 103, 122, 0.06); }
+  #sakura-void .flavor__title { color: #e8d0d8; }
+  #sakura-void .flavor__eyebrow .bar { background: var(--sakura); }
+  #sakura-void .flavor__eyebrow .label { color: var(--sakura); }
+  #sakura-void .flavor__claim .pill { color: var(--sakura); }
+  #sakura-void .flavor-split__right::after {
+    background: linear-gradient(90deg, #060204 0%, rgba(6,2,4,0) 30%);
+  }
+  #sakura-void .flavor-grid { border-top: 2px solid rgba(197, 103, 122, 0.2); }
+  #sakura-void .flavor-lore__geo .symbol { color: var(--sakura); }
+  #sakura-void .flavor-lore__geo .symbol-name { color: var(--sakura); }
+
+  /* ELDERFLOWER FROST specific */
+  #elderflower-frost {
+    background: #010508;
+  }
+  #elderflower-frost .flavor__kanji { color: rgba(106, 163, 196, 0.05); font-size: clamp(12rem, 24vw, 22rem); }
+  #elderflower-frost .flavor__title { color: #c8dce8; }
+  #elderflower-frost .flavor__eyebrow .bar { background: var(--frost); }
+  #elderflower-frost .flavor__eyebrow .label { color: var(--frost); }
+  #elderflower-frost .flavor__claim .pill { color: var(--frost); }
+  #elderflower-frost .flavor-split__left {
+    order: 2;
+  }
+  #elderflower-frost .flavor-split__right {
+    order: 1;
+  }
+  #elderflower-frost .flavor-split__right::after {
+    background: linear-gradient(270deg, #010508 0%, rgba(1,5,8,0) 30%);
+  }
+  #elderflower-frost .flavor-grid { border-top: 2px solid rgba(106, 163, 196, 0.2); }
+  #elderflower-frost .flavor-lore__geo .symbol { color: var(--frost); }
+  #elderflower-frost .flavor-lore__geo .symbol-name { color: var(--frost); }
+  #elderflower-frost .rune-row .rune-sym { color: var(--frost); }
+
+  @media (max-width: 900px) {
+    #elderflower-frost .flavor-split__left { order: unset; }
+    #elderflower-frost .flavor-split__right { order: unset; }
+    #elderflower-frost .flavor-split__right::after {
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, #010508 100%) !important;
+    }
+  }
+
+  /* DAMASCO RITUAL specific */
+  #damasco-ritual { background: #040200; }
+  #damasco-ritual .flavor__title { color: #e8d5b0; }
+  #damasco-ritual .flavor__eyebrow .bar { background: var(--damasco); }
+  #damasco-ritual .flavor__eyebrow .label { color: var(--damasco); }
+  #damasco-ritual .flavor__claim .pill { color: var(--damasco); }
+  #damasco-ritual .flavor-split__left { order: 2; }
+  #damasco-ritual .flavor-split__right { order: 1; }
+  #damasco-ritual .flavor-split__right::after {
+    background: linear-gradient(270deg, #040200 0%, rgba(4,2,0,0) 30%);
+  }
+  #damasco-ritual .flavor-grid { border-top: 2px solid rgba(201, 138, 75, 0.25); }
+  #damasco-ritual .flavor-lore__geo .symbol {
+    color: var(--damasco);
+    font-size: clamp(5rem, 13vw, 11rem);
+    line-height: 1.1;
+    direction: rtl;
+  }
+  #damasco-ritual .flavor-lore__geo .symbol-name { color: var(--damasco); }
+  #damasco-ritual .flavor__kanji {
+    color: rgba(201, 138, 75, 0.05);
+    direction: rtl;
+    font-size: clamp(14rem, 30vw, 28rem);
+  }
+
+  /* subtle amber glow */
+  #damasco-ritual::before {
+    background:
+      radial-gradient(ellipse at 70% 20%, rgba(201,138,75,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 30% 80%, rgba(180,100,30,0.04) 0%, transparent 50%);
+  }
+
+  /* Arabic word list */
+  .arabic-list {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 8px;
+  }
+  .arabic-row {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .arabic-row:first-child { border-top: 1px solid var(--line); }
+  .arabic-row .ar-word {
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--damasco);
+    direction: rtl;
+    text-align: right;
+  }
+  .arabic-row .ar-info { display: flex; flex-direction: column; gap: 3px; }
+  .arabic-row .ar-latin {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+  }
+  .arabic-row .ar-meaning {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 900px) {
+    #damasco-ritual .flavor-split__left { order: unset; }
+    #damasco-ritual .flavor-split__right { order: unset; }
+    #damasco-ritual .flavor-split__right::after {
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, #040200 100%) !important;
+    }
+  }
+  #melao-caos { background: #020601; }
+  #melao-caos .flavor__title { color: #c8dab8; }
+  #melao-caos .flavor__eyebrow .bar { background: var(--melao); }
+  #melao-caos .flavor__eyebrow .label { color: var(--melao); }
+  #melao-caos .flavor__claim .pill { color: var(--melao); }
+  #melao-caos .flavor-split__right::after {
+    background: linear-gradient(90deg, #020601 0%, rgba(2,6,1,0) 30%);
+  }
+  #melao-caos .flavor-grid { border-top: 2px solid rgba(111, 138, 79, 0.25); }
+  #melao-caos .flavor-lore__geo .symbol { color: var(--melao); }
+  #melao-caos .flavor-lore__geo .symbol-name { color: var(--melao); }
+
+  /* vertical "GIGANTE" background text */
+  .gigante-bg {
+    position: absolute;
+    top: 0; right: -0.02em;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(8rem, 16vw, 15rem);
+    letter-spacing: -0.05em;
+    color: rgba(111, 138, 79, 0.05);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    white-space: nowrap;
+  }
+
+  /* gold accent for Melão */
+  .gold { color: #b8942a; }
+
+  /* cristo lore list */
+  .cristo-list {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 8px;
+  }
+  .cristo-row {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .cristo-row:first-child { border-top: 1px solid var(--line); }
+  .cristo-row .cr-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--melao);
+    margin-bottom: 5px;
+    display: block;
+  }
+  .cristo-row .cr-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--fg);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 900px) {
+    .flavor-split {
+      grid-template-columns: 1fr;
+      grid-template-rows: 55vw auto;
+    }
+    .flavor-split__left {
+      padding: 40px 22px 60px;
+    }
+    .flavor-split__right {
+      order: -1;
+      height: 55vw;
+    }
+    .flavor-split__right img { object-position: center 15%; }
+    .flavor-split__right::after {
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, #060204 100%) !important;
+    }
+    .flavor__kanji { display: none; }
+    .flavor__title { font-size: clamp(2.4rem, 10vw, 4rem); margin-bottom: 32px; }
+    .flavor__copy p { font-size: clamp(1rem, 4vw, 1.4rem); }
+  }
+  /* ═══════════════════════════════════════
+     RESPONSIVE & MOBILE OPTIMIZATION
+  ═══════════════════════════════════════ */
+
+  /* Custom webkit scrollbar (desktop) */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #2D1B5E; }
+  ::-webkit-scrollbar-thumb { background: #E040FB; border-radius: 2px; }
+
+  /* Prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .scroll-hint__line { animation: none !important; }
+    .dot { animation: none !important; }
+    .ct-border-wrap, .ct-border-wrap::before { animation: none !important; }
+  }
+
+  /* Global overflow guard */
+  section, footer { max-width: 100vw; overflow-x: hidden; }
+
+  /* Hamburger — hidden desktop */
+  .nav__hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 44px;
+    background: none; border: none; cursor: pointer;
+    padding: 10px; pointer-events: auto;
+  }
+  .nav__hamburger span {
+    display: block; width: 20px; height: 1px;
+    background: #fff; border-radius: 1px;
+    transition: transform .3s ease, opacity .3s ease;
+  }
+
+  /* Mobile menu drawer */
+  #mobileMenu {
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+  }
+  #mobileMenu.open { display: block; }
+  #mobileMenuBackdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+  #mobileMenuDrawer {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: min(80vw, 320px);
+    background: #0E0A1A;
+    padding: 32px 28px;
+    display: flex; flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  #mobileMenu.open #mobileMenuDrawer { transform: translateX(0); }
+  #mobileMenuClose {
+    align-self: flex-end; width: 44px; height: 44px;
+    background: none; border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; border-radius: 50%; cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 32px; flex-shrink: 0;
+  }
+  #mobileMenuLinks { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  #mobileMenuLinks li a {
+    display: block; padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #e9e7e2;
+    text-decoration: none;
+    transition: color .2s ease;
+  }
+  #mobileMenuLinks li a:hover { color: #E040FB; }
+
+  /* ── MOBILE BREAKPOINT (≤767px) ── */
+  @media (max-width: 767px) {
+
+    /* Nav */
+    .nav { padding: 16px 20px; }
+    .nav__links { display: none; }
+    .nav__hamburger { display: flex; }
+
+    /* Hero */
+    .hero__inner {
+      grid-template-columns: 1fr;
+      padding: 20px;
+      text-align: center;
+    }
+    .hero__copy h1 {
+      font-size: clamp(2.2rem, 10vw, 3.5rem);
+    }
+    .hero__meta { justify-self: center; text-align: center; }
+    .hero__topinfo { padding: 56px 20px 0; }
+
+    /* Concept */
+    .with-meta { grid-template-columns: 1fr; gap: 32px; }
+    .stack__line { font-size: clamp(1.6rem, 7vw, 2.8rem); }
+
+    /* Identity */
+    #identity .with-meta { grid-template-columns: 1fr; }
+    #identity .stack { text-align: left; align-items: flex-start; }
+    #identity .side-meta {
+      border-right: none; border-left: 1px solid var(--line);
+      padding-right: 0; padding-left: 20px;
+      text-align: left; align-items: flex-start;
+    }
+
+    /* Dobras geral */
+    section.dobra { padding: 80px 20px 60px; }
+    .dobra__eyebrow { left: 20px; top: 36px; }
+
+    /* Flavors intro */
+    .flavors-intro__head { grid-template-columns: 1fr; padding: 0 20px 32px; }
+    .flavors-intro__caption { justify-self: start; text-align: left; max-width: none; }
+    .lineup__legend { grid-template-columns: repeat(2,1fr); padding: 16px 20px; gap: 12px 16px; }
+    .lineup { aspect-ratio: 3/4; }
+
+    /* Flavor split — single column, image first */
+    .flavor-split { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+    .flavor-split__right { order: -1 !important; height: 60vh; max-height: 60vh; }
+    .flavor-split__left { padding: 32px 20px 48px; order: 0 !important; }
+    .flavor-split__right img { object-position: center 20%; }
+    .flavor__kanji { display: none; }
+    .flavor__title { font-size: clamp(2rem, 9vw, 3rem); margin-bottom: 24px; }
+    .flavor__copy p { font-size: clamp(0.95rem, 4vw, 1.2rem); }
+    .flavor-lore { grid-template-columns: 1fr; gap: 40px; padding: 48px 20px; }
+    .flavor-grid { grid-template-columns: 1fr; }
+    .flavor-grid__portrait { display: none; }
+    .flavor-grid__square { aspect-ratio: 1/1; }
+
+    /* World carousel */
+    .world-header { padding: 0 20px 32px; }
+    .world-card { height: auto; width: 85vw; max-width: 85vw; aspect-ratio: 9/16; }
+    .world-track { padding: 8px 7.5vw; gap: 12px; }
+    .world-scrollbar { display: none; }
+    .world-progress { display: block !important; margin: 20px 20px 0; }
+
+    /* World dot indicators (mobile only) */
+    .world-dots { display: flex !important; }
+
+    /* Can system */
+    #can-system { padding: 60px 20px 60px; }
+    .can-system__header { margin-bottom: 40px; }
+    .can-system__body { grid-template-columns: 1fr; gap: 36px; }
+    .can-system__img-wrap { aspect-ratio: 4/3; }
+    .can-rule__text { font-size: 11px; }
+
+    /* Color system */
+    #color-system { padding: 60px 20px 60px; }
+    .palette-global { margin-bottom: 56px; }
+    .pg-row--4 { grid-template-columns: repeat(2,1fr); gap: 12px; }
+    .pg-row--3 { grid-template-columns: repeat(2,1fr); gap: 12px; }
+    .gs-swatch__color { min-height: 80px; }
+    .gs-swatch__name { font-size: 11px; }
+    .gs-swatch__hex, .gs-swatch__desc { font-size: 8px; }
+    .palette-flavors { gap: 0; }
+    .fp-row { grid-template-columns: 1fr; gap: 10px; padding: 20px 0; }
+    .fp-label { font-size: 11px; }
+    .fp-bar { height: 40px; }
+    .fp-bar-hex span { font-size: 11px; }
+
+    /* Swatch tap state */
+    .gs-swatch__color:active { transform: scale(0.97); }
+
+    /* Closing timer */
+    #closing-timer { padding: 60px 20px; }
+    .ct-inner { padding: 32px 40px; }
+    #ct-display { font-size: clamp(2.2rem, 8vw, 3.5rem); }
+
+    /* Section/world title scale */
+    .world-title, .color-title, .can-system__title {
+      font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+    .can-system__header { margin-bottom: 36px; }
+  }
+
+  /* ── TABLET BREAKPOINT (768–1279px) ── */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .nav { padding: 20px 28px; }
+    .nav__links { gap: 16px; }
+    .nav__links a { font-size: 9px; }
+    section.dobra { padding: 100px 28px; }
+    .dobra__eyebrow { left: 28px; }
+    .flavor-split__left { padding: 60px 40px 60px 28px; }
+    .flavor-lore { padding: 72px 28px; gap: 48px; }
+    .fp-row { grid-template-columns: 200px 1fr; }
+    .world-header { padding: 0 28px 48px; }
+    .world-card { width: 60vw; max-width: 60vw; }
+    .world-track { padding: 8px 20vw; }
+    #can-system { padding: 80px 28px 80px; }
+    .can-system__body { gap: 48px; }
+    .palette-global { gap: 16px; }
+    .pg-row--4 { gap: 16px; }
+    .pg-row--3 { gap: 16px; }
+    .gs-swatch__color { min-height: 100px; }
+    .ct-inner { padding: 40px 60px; }
+  }
+
+  /* Mobile-only dot indicators for carousel */
+  .world-dots {
+    display: none;
+    justify-content: center; gap: 6px;
+    margin-top: 16px;
+    padding: 0 20px;
+  }
+  .world-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(233,231,226,0.25);
+    transition: background .3s ease, transform .3s ease;
+  }
+  .world-dot.active {
+    background: #E040FB;
+    transform: scale(1.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" aria-hidden="true">
+  <div id="mobileMenuBackdrop"></div>
+  <nav id="mobileMenuDrawer">
+    <button id="mobileMenuClose" aria-label="Close menu">✕</button>
+    <ul id="mobileMenuLinks">
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#identity">Identity</a></li>
+      <li><a href="#flavors-intro">Flavors</a></li>
+      <li><a href="#sakura-void">Sakura Void</a></li>
+      <li><a href="#elderflower-frost">Elderflower Frost</a></li>
+      <li><a href="#melao-caos">Melão Caos</a></li>
+      <li><a href="#damasco-ritual">Damasco Ritual</a></li>
+      <li><a href="#world-ugc">World</a></li>
+      <li><a href="#can-system">Packaging</a></li>
+      <li><a href="#color-system">Color</a></li>
+      <li><a href="#closing-timer">Timer</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav__logo">25h</a>
+  <ul class="nav__links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#identity">Identity</a></li>
+    <li><a href="#flavors-intro">Flavors</a></li>
+    <li><a href="#sakura-void">Sakura</a></li>
+    <li><a href="#elderflower-frost">Frost</a></li>
+    <li><a href="#melao-caos">Melão</a></li>
+    <li><a href="#damasco-ritual">Damasco</a></li>
+    <li><a href="#world-ugc">World</a></li>
+    <li><a href="#can-system">Pack</a></li>
+    <li><a href="#color-system">Color</a></li>
+    <li><a href="#closing-timer">Timer</a></li>
+  </ul>
+  <button class="nav__hamburger" id="navHamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" data-screen-label="01 Hero">
+  <div class="hero__media">
+    <picture>
+      <source media="(max-width: 720px)" srcset="assets/hero-mobile.png">
+      <img class="desktop" src="assets/hero-desktop.png" alt="25h — four flavors" data-parallax data-parallax-speed="0.15">
+    </picture>
+  </div>
+  <div class="hero__vignette"></div>
+
+  <div class="hero__topinfo">
+    <span class="mono reveal">25:00 — energy</span>
+    <span class="mono reveal" style="transition-delay:.2s">Case Study · 2026</span>
+  </div>
+
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <h1 class="reveal--stagger">
+        <span style="display:block">the hour</span>
+        <span style="display:block" class="dim">that doesn't exist.</span>
+      </h1>
+    </div>
+    <div class="hero__meta mono reveal" style="transition-delay:.5s">
+      <span class="label">Flavors / 04</span>
+      <span class="label">Volume / 450mL</span>
+      <span class="val">+1h unlocked</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span class="mono">scroll</span>
+    <span class="scroll-hint__line"></span>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="dobra" id="concept" data-screen-label="02 Concept">
+  <div class="dobra__eyebrow mono">
+    <span class="num">01</span>
+    <span class="bar"></span>
+    <span class="label">Concept</span>
+  </div>
+
+  <div class="dobra__inner">
+    <div class="with-meta">
+      <div class="stack reveal--stagger">
+        <span class="stack__line">25h is not a time.</span>
+        <span class="stack__line">It's a <span class="accent">state</span>.</span>
+        <span class="stack__line dim">When everyone went to sleep</span>
+        <span class="stack__line dim">and you're still here.</span>
+      </div>
+      <aside class="side-meta reveal" style="transition-delay:.6s">
+        <div class="row">
+          <span class="mono">↳ Local time</span>
+          <span class="v">02:13 AM</span>
+        </div>
+        <div class="row">
+          <span class="mono">↳ Status</span>
+          <span class="v">Awake / Unlocked</span>
+        </div>
+        <div class="row">
+          <span class="mono">↳ Mode</span>
+          <span class="v">25h</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- IDENTITY -->
+<section class="dobra" id="identity" data-screen-label="03 Identity">
+  <div class="dobra__eyebrow mono">
+    <span class="num">02</span>
+    <span class="bar"></span>
+    <span class="label">Identity</span>
+  </div>
+
+  <div class="dobra__inner">
+    <div class="with-meta">
+      <aside class="side-meta reveal" style="transition-delay:.6s">
+        <div class="row">
+          <span class="mono">↳ Type</span>
+          <span class="v">Quiet, condensed</span>
+        </div>
+        <div class="row">
+          <span class="mono">↳ Palette</span>
+          <span class="v">Black + 4 hues</span>
+        </div>
+        <div class="row">
+          <span class="mono">↳ Tone</span>
+          <span class="v">2:00 AM</span>
+        </div>
+      </aside>
+      <div class="stack reveal--stagger">
+        <span class="stack__line">A brand built in the dark.</span>
+        <span class="stack__line dim">Typography that doesn't shout.</span>
+        <span class="stack__line dim">Colors that don't ask permission.</span>
+        <span class="stack__line"><span class="accent">Design that only makes sense at 2am.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLAVORS INTRO -->
+<section class="dobra" id="flavors-intro" data-screen-label="04 Flavors">
+  <div class="dobra__eyebrow mono">
+    <span class="num">03</span>
+    <span class="bar"></span>
+    <span class="label">The Flavors</span>
+  </div>
+
+  <div class="flavors-intro__head">
+    <div class="flavors-intro__title stack reveal--stagger">
+      <span class="stack__line">Four cultures.</span>
+      <span class="stack__line">Four universes.</span>
+      <span class="stack__line">One impossible hour.</span>
+    </div>
+    <p class="flavors-intro__caption reveal" style="transition-delay:.5s">
+      Each can is a door. Four origins, one single state of mind — the hour that exists between exhaustion and the next idea.
+    </p>
+  </div>
+
+  <div class="lineup reveal">
+    <picture>
+      <source media="(max-width: 720px)" srcset="assets/hero-mobile.png">
+      <img loading="lazy" src="assets/hero-desktop.png" alt="25h lineup — four flavors" data-parallax data-parallax-speed="0.1">
+    </picture>
+    <div class="lineup__legend">
+      <div class="item">
+        <span class="dot" style="background:var(--sakura); --pulse-color:rgba(197,103,122,0.6); animation-delay:0s"></span>
+        <span class="name">Sakura Void</span>
+        <span class="culture">JP · 桜</span>
+      </div>
+      <div class="item">
+        <span class="dot" style="background:var(--melao); --pulse-color:rgba(111,138,79,0.6); animation-delay:0.55s"></span>
+        <span class="name">Melão Caos</span>
+        <span class="culture">BR · 🇧🇷</span>
+      </div>
+      <div class="item">
+        <span class="dot" style="background:var(--damasco); --pulse-color:rgba(201,138,75,0.6); animation-delay:1.1s"></span>
+        <span class="name">Damasco Ritual</span>
+        <span class="culture">AR · ب</span>
+      </div>
+      <div class="item">
+        <span class="dot" style="background:var(--frost); --pulse-color:rgba(106,163,196,0.6); animation-delay:1.65s"></span>
+        <span class="name">Elderflower Frost</span>
+        <span class="culture">NO · ᚱ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAKURA VOID -->
+<section class="flavor-dobra" id="sakura-void" data-screen-label="05 Sakura Void">
+
+  <div class="flavor-split">
+    <!-- LEFT: copy -->
+    <div class="flavor-split__left">
+      <div class="flavor__kanji">刹那</div>
+
+      <div class="flavor__eyebrow mono reveal">
+        <span class="num">01</span>
+        <span class="bar"></span>
+        <span class="label">Sakura Void</span>
+      </div>
+
+      <h2 class="flavor__title reveal--stagger">
+        <span style="display:block">The fleeting</span>
+        <span style="display:block">moment.</span>
+      </h2>
+
+      <div class="flavor__copy reveal--stagger">
+        <p>The fleeting moment.</p>
+        <p>Delicate floral, electric acidity.</p>
+        <p>The taste of beautiful transience.</p>
+      </div>
+
+      <div class="flavor__claim reveal" style="transition-delay:.7s">
+        <span class="pill" style="opacity: 5; font-size: 18px">JP · 桜</span>
+        <span class="mono" style="font-size: 15px">450ml = unlocks +1h</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: hero can -->
+    <div class="flavor-split__right">
+      <img loading="lazy" src="assets/sakura-hero.jpg" alt="25h Sakura Void can" data-parallax data-parallax-speed="0.12">
+    </div>
+  </div>
+
+  <!-- GRID de shots abaixo -->
+  <div class="flavor-grid reveal">
+    <div class="flavor-grid__portrait">
+      <img loading="lazy" src="assets/sakura-hero.jpg" alt="Sakura Void — can portrait" style="width: 581px; height: 844px; object-fit: cover">
+    </div>
+    <div class="flavor-grid__square">
+      <img loading="lazy" src="assets/sakura-grid.jpg" alt="Sakura Void — product details">
+    </div>
+  </div>
+
+  <!-- SAKURA LORE -->
+  <div class="flavor-lore reveal">
+    <div class="flavor-lore__geo">
+      <span class="city mono">Tokyo · 03:00 AM · JP</span>
+      <span class="symbol">刹那</span>
+      <span class="symbol-name mono">Setsuna</span>
+      <p class="symbol-def">The Japanese concept of the briefest unit of time. A moment so small it barely exists.</p>
+    </div>
+    <div class="flavor-lore__text">
+      <p class="highlight">The cherry blossom that blooms in the dark.</p>
+      <p>Engraved on the can because that's exactly what the 25h is — a moment that shouldn't exist, but does.</p>
+      <p>The branch rises from the base. Petals fall upward. Because at 3am, gravity works differently.</p>
+      <p class="closing">For the ones who understand that the most beautiful things are always temporary.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ELDERFLOWER FROST -->
+<section class="flavor-dobra" id="elderflower-frost" data-screen-label="06 Elderflower Frost">
+
+  <div class="flavor-split">
+    <!-- RIGHT (visually left on desktop): can hero -->
+    <div class="flavor-split__right">
+      <img loading="lazy" src="assets/frost-hero.jpg" alt="25h Elderflower Frost can" data-parallax data-parallax-speed="0.12">
+    </div>
+
+    <!-- LEFT (visually right on desktop): copy -->
+    <div class="flavor-split__left">
+      <div class="flavor__kanji">ᛊ</div>
+
+      <div class="flavor__eyebrow mono reveal">
+        <span class="num">02</span>
+        <span class="bar"></span>
+        <span class="label">Elderflower Frost</span>
+      </div>
+
+      <h2 class="flavor__title reveal--stagger">
+        <span style="display:block">The taste of</span>
+        <span style="display:block">white silence.</span>
+      </h2>
+
+      <div class="flavor__copy reveal--stagger">
+        <p>For those who work in peace</p>
+        <p>while the world makes noise outside.</p>
+        <p>Nordic tundra. Polar night. 69°N.</p>
+      </div>
+
+      <div class="flavor__claim reveal" style="transition-delay:.7s">
+        <span class="pill" style="font-size: 18px; opacity: 50">NO · ᚠᚢᚾᛁᚾᛊᚠ</span>
+        <span class="mono" style="font-size: 15px">450ml = unlocks +1h</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="flavor-grid reveal">
+    <div class="flavor-grid__portrait">
+      <img loading="lazy" src="assets/frost-hero.jpg" alt="Elderflower Frost — can portrait">
+    </div>
+    <div class="flavor-grid__square">
+      <img loading="lazy" src="assets/frost-grid.jpg" alt="Elderflower Frost — product details">
+    </div>
+  </div>
+
+  <!-- LORE: Runes -->
+  <div class="flavor-lore reveal">
+    <div class="flavor-lore__geo">
+      <span class="city mono">Nordic Tundra · 69°N · Polar Night</span>
+      <span class="symbol">ᛊ</span>
+      <span class="symbol-name mono">Sowilo — The Hidden Sun</span>
+      <p class="symbol-def">Light in the longest night. Seven runes. One can. Carved for the ones who understand silence as a form of focus.</p>
+    </div>
+
+    <div class="flavor-lore__text">
+      <div class="rune-list">
+        <div class="rune-row">
+          <span class="rune-sym">ᚠ</span>
+          <div class="rune-info">
+            <span class="rune-name">Fehu</span>
+            <span class="rune-meaning">Abundance. The energy that compounds.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᚢ</span>
+          <div class="rune-info">
+            <span class="rune-name">Uruz</span>
+            <span class="rune-meaning">Raw strength. The force that doesn't ask.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᚾ</span>
+          <div class="rune-info">
+            <span class="rune-name">Naudhiz</span>
+            <span class="rune-meaning">Necessity. What you do because you must.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᛁ</span>
+          <div class="rune-info">
+            <span class="rune-name">Isa</span>
+            <span class="rune-meaning">Ice. The stillness before everything moves.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᚾ</span>
+          <div class="rune-info">
+            <span class="rune-name">Naudiz</span>
+            <span class="rune-meaning">The constraint that becomes power.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᛊ</span>
+          <div class="rune-info">
+            <span class="rune-name">Sowilo</span>
+            <span class="rune-meaning">The hidden sun. Light in the longest night.</span>
+          </div>
+        </div>
+        <div class="rune-row">
+          <span class="rune-sym">ᚠ</span>
+          <div class="rune-info">
+            <span class="rune-name">Fehu — Again</span>
+            <span class="rune-meaning">Because abundance is circular.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- MELÃO CAOS -->
+<section class="flavor-dobra" id="melao-caos" data-screen-label="07 Melão Caos">
+
+  <div class="flavor-split">
+    <!-- LEFT: copy -->
+    <div class="flavor-split__left">
+      <div class="gigante-bg">GIGANTE</div>
+
+      <div class="flavor__eyebrow mono reveal">
+        <span class="num">03</span>
+        <span class="bar"></span>
+        <span class="label">Melão Caos</span>
+      </div>
+
+      <h2 class="flavor__title reveal--stagger">
+        <span style="display:block">Sweet on the</span>
+        <span style="display:block">outside.</span>
+        <span style="display:block; color:var(--melao)">Chaos within.</span>
+      </h2>
+
+      <div class="flavor__copy reveal--stagger">
+        <p>The tropical that never apologizes.</p>
+        <p>Brazil. Somewhere between order and progress.</p>
+        <p>The giant that wakes itself.</p>
+      </div>
+
+      <div class="flavor__claim reveal" style="transition-delay:.7s">
+        <span class="pill" style="opacity: 50; font-size: 18px">BR · Cristo</span>
+        <span class="mono" style="font-size: 15px">450ml = unlocks +1h</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: can hero -->
+    <div class="flavor-split__right">
+      <img loading="lazy" src="assets/melao-hero.jpg" alt="25h Melão Caos can" data-parallax data-parallax-speed="0.12">
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="flavor-grid reveal">
+    <div class="flavor-grid__portrait">
+      <img loading="lazy" src="assets/melao-hero.jpg" alt="Melão Caos — can portrait">
+    </div>
+    <div class="flavor-grid__square">
+      <img loading="lazy" src="assets/melao-grid.jpg" alt="Melão Caos — product details">
+    </div>
+  </div>
+
+  <!-- LORE -->
+  <div class="flavor-lore reveal">
+    <div class="flavor-lore__geo">
+      <span class="city mono">Brazil · Between Order and Progress</span>
+      <span class="symbol" style="font-size:clamp(3rem,8vw,7rem);line-height:1.1">Giant<br>by its own<br>nature.</span>
+      <span class="symbol-name mono" style="margin-top:20px">Embossed — Left side of the can</span>
+      <p class="symbol-def">Seven words running vertically. A reminder that greatness here was never given — it was grown from tropical soil.</p>
+    </div>
+
+    <div class="flavor-lore__text">
+      <div class="cristo-list">
+        <div class="cristo-row">
+          <span class="cr-label">↳ Cristo Redentor — Attitude</span>
+          <span class="cr-text">Arms open to everything. Judging nothing. The symbol of a country that contains multitudes — beauty and chaos, warmth and wildness, all at once, always.</span>
+        </div>
+        <div class="cristo-row">
+          <span class="cr-label">↳ Brazil</span>
+          <span class="cr-text">Not as religion. As attitude. A nation that was never ordinary — not when it tried to be, not when it didn't.</span>
+        </div>
+        <div class="cristo-row">
+          <span class="cr-label">↳ For Whom</span>
+          <span class="cr-text">For the ones who thrive in the mess. Who find clarity inside the chaos. Who are sweet on the outside and absolutely feral within.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- DAMASCO RITUAL -->
+<section class="flavor-dobra" id="damasco-ritual" data-screen-label="08 Damasco Ritual">
+
+  <div class="flavor-split">
+    <!-- RIGHT (visually left): can hero -->
+    <div class="flavor-split__right">
+      <img loading="lazy" src="assets/damasco-hero.jpg" alt="25h Damasco Ritual can" data-parallax data-parallax-speed="0.12">
+    </div>
+
+    <!-- LEFT (visually right): copy -->
+    <div class="flavor-split__left">
+      <div class="flavor__kanji">ب</div>
+
+      <div class="flavor__eyebrow mono reveal">
+        <span class="num">04</span>
+        <span class="bar"></span>
+        <span class="label">Damasco Ritual</span>
+      </div>
+
+      <h2 class="flavor__title reveal--stagger">
+        <span style="display:block">Ancient and</span>
+        <span style="display:block">futuristic</span>
+        <span style="display:block; color:var(--damasco)">at once.</span>
+      </h2>
+
+      <div class="flavor__copy reveal--stagger">
+        <p>The flavor of a bazaar at 4am.</p>
+        <p>Damascus. Isfahan. The hour before the call to prayer.</p>
+        <p>Some things don't need explaining.</p>
+      </div>
+
+      <div class="flavor__claim reveal" style="transition-delay:.7s">
+        <span class="pill" style="direction: rtl; font-size: 18px; opacity: 50">ب · باء</span>
+        <span class="mono" style="font-size: 15px">450ml = unlocks +1h</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="flavor-grid reveal">
+    <div class="flavor-grid__portrait">
+      <img loading="lazy" src="assets/damasco-hero.jpg" alt="Damasco Ritual — can portrait">
+    </div>
+    <div class="flavor-grid__square">
+      <img loading="lazy" src="assets/damasco-grid.jpg" alt="Damasco Ritual — product details">
+    </div>
+  </div>
+
+  <!-- LORE -->
+  <div class="flavor-lore reveal">
+    <div class="flavor-lore__geo">
+      <span class="city mono">Damascus · Isfahan · 04:00 AM</span>
+      <span class="symbol" style="font-family:'Inter',sans-serif;">ب</span>
+      <span class="symbol-name mono">Ba — The second letter</span>
+      <p class="symbol-def">In the Sufi tradition — the dot beneath the Ba contains the secret of all existence. One letter. One dot. Everything.</p>
+
+      <div style="margin-top:32px; padding:20px; border:1px solid rgba(201,138,75,0.2); border-radius:2px;">
+        <span class="mono" style="display:block; margin-bottom:12px; color:var(--damasco)">↳ Islamic Geometry</span>
+        <p style="font-size:12px; color:var(--fg-dim); line-height:1.6; font-weight:300;">
+          Mathematics as art.<br>
+          Precision as devotion.<br>
+          The most complex patterns<br>
+          built from the simplest shapes.
+        </p>
+      </div>
+    </div>
+
+    <div class="flavor-lore__text">
+      <p class="highlight" style="margin-bottom:8px;">قوة · إرادة · نار · روح · صبر · ملك</p>
+      <p style="margin-bottom:28px;">Six words. The six things you need to still be awake at 4am doing something that matters.</p>
+      <div class="arabic-list">
+        <div class="arabic-row">
+          <span class="ar-word">قوة</span>
+          <div class="ar-info">
+            <span class="ar-latin">Quwwa</span>
+            <span class="ar-meaning">Strength. The force that builds empires.</span>
+          </div>
+        </div>
+        <div class="arabic-row">
+          <span class="ar-word">إرادة</span>
+          <div class="ar-info">
+            <span class="ar-latin">Irada</span>
+            <span class="ar-meaning">Will. The decision that precedes everything.</span>
+          </div>
+        </div>
+        <div class="arabic-row">
+          <span class="ar-word">نار</span>
+          <div class="ar-info">
+            <span class="ar-latin">Nar</span>
+            <span class="ar-meaning">Fire. What lights the way at 4am.</span>
+          </div>
+        </div>
+        <div class="arabic-row">
+          <span class="ar-word">روح</span>
+          <div class="ar-info">
+            <span class="ar-latin">Ruh</span>
+            <span class="ar-meaning">Soul. What you put into the work.</span>
+          </div>
+        </div>
+        <div class="arabic-row">
+          <span class="ar-word">صبر</span>
+          <div class="ar-info">
+            <span class="ar-latin">Sabr</span>
+            <span class="ar-meaning">Patience. The discipline that is its own prayer.</span>
+          </div>
+        </div>
+        <div class="arabic-row">
+          <span class="ar-word">ملك</span>
+          <div class="ar-info">
+            <span class="ar-latin">Mulk</span>
+            <span class="ar-meaning">Kingdom. What you're building while they sleep.</span>
+          </div>
+        </div>
+      </div>
+      <p class="closing">For the ones who find ritual in work. Who understand that discipline is its own kind of prayer.</p>
+    </div>
+  </div>
+
+</section>
+
+
+
+<!-- WORLD / UGC -->
+<section id="world-ugc" data-screen-label="09 World">
+
+  <div class="world-header reveal">
+    <span class="world-label"><span class="bar"></span>09 — World</span>
+    <h2 class="world-title">still here.</h2>
+    <p class="world-sub">No athletes. No parties. No 'you got this.'</p>
+  </div>
+
+  <div class="world-track" id="worldTrack">
+
+    <div class="world-card wc-active">
+      <img loading="lazy" src="assets/ugc-1.jpg" alt="Sakura Void — open air">
+      <div class="world-card__overlay"></div>
+      <div class="world-card__caption">
+        <span class="world-card__flavor">Sakura Void</span>
+        <span class="world-card__desc">open air.</span>
+      </div>
+    </div>
+
+    <div class="world-card">
+      <img loading="lazy" src="assets/ugc-2.jpg" alt="Sakura Void + Elderflower Frost — 2am kitchen">
+      <div class="world-card__overlay"></div>
+      <div class="world-card__caption">
+        <span class="world-card__flavor">Sakura Void + Elderflower Frost</span>
+        <span class="world-card__desc">2am kitchen.</span>
+      </div>
+    </div>
+
+    <div class="world-card">
+      <img loading="lazy" src="assets/ugc-3.jpg" alt="Sakura Void — match paused">
+      <div class="world-card__overlay"></div>
+      <div class="world-card__caption">
+        <span class="world-card__flavor">Sakura Void</span>
+        <span class="world-card__desc">match paused.</span>
+      </div>
+    </div>
+
+    <div class="world-card">
+      <img loading="lazy" src="assets/ugc-4.jpg" alt="Melão Caos + Elderflower Frost — still awake">
+      <div class="world-card__overlay"></div>
+      <div class="world-card__caption">
+        <span class="world-card__flavor">Melão Caos + Elderflower Frost</span>
+        <span class="world-card__desc">still awake.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="world-progress">
+    <div class="world-progress__fill" id="worldProgressFill"></div>
+  </div>
+
+  <div class="world-scrollbar" id="worldScrollbar">
+    <div class="world-scrollbar__thumb" id="worldThumb"></div>
+  </div>
+
+  <div class="world-dots" id="worldDots">
+    <div class="world-dot active" data-idx="0"></div>
+    <div class="world-dot" data-idx="1"></div>
+    <div class="world-dot" data-idx="2"></div>
+    <div class="world-dot" data-idx="3"></div>
+  </div>
+
+</section>
+
+<!-- CAN SYSTEM -->
+<section id="can-system" data-screen-label="10 Packaging">
+
+  <div class="can-system__header reveal">
+    <div class="can-system__label"><span class="bar"></span>10 — Packaging</div>
+    <h2 class="can-system__title">designed in layers.</h2>
+    <p class="can-system__sub">70% smooth matte aluminum. The relief exists only where it matters.</p>
+  </div>
+
+  <div class="can-system__body">
+
+    <!-- LEFT: flat lay image -->
+    <div class="can-system__img-wrap reveal" id="canFlatLayWrap">
+      <img loading="lazy" src="assets/sakura-grid.jpg" alt="25h Sakura Void — packaging detail grid">
+    </div>
+
+    <!-- RIGHT: rules -->
+    <div class="can-system__rules reveal" style="transition-delay:.2s">
+      <div class="can-rule">
+        <span class="can-rule__num">01</span>
+        <span class="can-rule__text"><strong>70% smooth matte surface</strong> — intentional negative space.</span>
+      </div>
+      <div class="can-rule">
+        <span class="can-rule__num">02</span>
+        <span class="can-rule__text"><strong>Relief depth:</strong> 0.2–0.3mm bas-relief · 0.5mm high relief</span>
+      </div>
+      <div class="can-rule">
+        <span class="can-rule__num">03</span>
+        <span class="can-rule__text"><strong>Cultural symbol:</strong> ghost watermark 8–10% opacity + lateral high relief</span>
+      </div>
+      <div class="can-rule">
+        <span class="can-rule__num">04</span>
+        <span class="can-rule__text"><strong>Universal footer:</strong> 450ml = unlocks +1h</span>
+      </div>
+      <div class="can-rule">
+        <span class="can-rule__num">05</span>
+        <span class="can-rule__text"><strong>Top seal:</strong> 25h embossed — Japanese whisky reference</span>
+      </div>
+      <div class="can-rule">
+        <span class="can-rule__num">06</span>
+        <span class="can-rule__text"><strong>Easter egg:</strong> the copy nobody reads until they look twice.</span>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- COLOR SYSTEM -->
+<section id="color-system" data-screen-label="11 Color">
+
+  <div class="color-header reveal">
+    <div class="color-label"><span class="bar"></span>11 — Color</div>
+    <h2 class="color-title">built in the dark.</h2>
+    <p class="color-sub">Every color was chosen at 2am. None of them apologize.</p>
+  </div>
+
+  <!-- PART 1: Global Palette -->
+  <div class="palette-global reveal--stagger">
+
+    <!-- ROW 1 -->
+    <div class="pg-row pg-row--4">
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color:#0E0A1A; border:1px solid rgba(255,255,255,0.1); --glow:rgba(14,10,26,0.8);"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">VOID</span>
+          <span class="gs-swatch__hex">#0E0A1A</span>
+          <span class="gs-swatch__desc">the background of everything.</span>
+        </div>
+      </div>
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color:#E040FB; --glow:rgba(224,64,251,0.6);"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">PULSO</span>
+          <span class="gs-swatch__hex">#E040FB</span>
+          <span class="gs-swatch__desc">electric magenta. the main frequency.</span>
+        </div>
+      </div>
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color:#7C3AED; --glow:rgba(124,58,237,0.6);"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">DRIFT</span>
+          <span class="gs-swatch__hex">#7C3AED</span>
+          <span class="gs-swatch__desc">medium violet. the transition.</span>
+        </div>
+      </div>
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color:#2D1B5E; --glow:rgba(45,27,94,0.7);"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">NOITE</span>
+          <span class="gs-swatch__hex">#2D1B5E</span>
+          <span class="gs-swatch__desc">deep purple. the depth.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="pg-row pg-row--3">
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color: #EAE8F2; --glow: rgba(234,232,242,0.6); width: 250px; height: 250px; margin: 0px"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">LUZ</span>
+          <span class="gs-swatch__hex">#EAE8F2</span>
+          <span class="gs-swatch__desc">the only thing visible in the void.</span>
+        </div>
+      </div>
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color: #B8EAF5; --glow: rgba(184,234,245,0.6); width: 250px; height: 250px"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">GELO</span>
+          <span class="gs-swatch__hex">#B8EAF5</span>
+          <span class="gs-swatch__desc">the silence before.</span>
+        </div>
+      </div>
+
+      <div class="gs-swatch">
+        <div class="gs-swatch__color" style="background-color: #D08430; --glow: rgba(208,132,48,0.6); width: 250px; height: 250px"></div>
+        <div class="gs-swatch__info">
+          <span class="gs-swatch__name">ÂMBAR</span>
+          <span class="gs-swatch__hex">#D08430</span>
+          <span class="gs-swatch__desc">the ancient frequency.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+    <!-- PART 2: Flavor Palettes -->
+  <div class="palette-flavors reveal">
+
+    <div class="fp-row">
+      <span class="fp-label">001 · Sakura Void · JP</span>
+      <div class="fp-bar-wrap">
+        <div class="fp-bar" style="background:linear-gradient(90deg,#161016,#BC768F,#F08DB9); --glow:rgba(240,141,185,0.45);"></div>
+        <div class="fp-bar-hex"><span>#161016</span><span>#BC768F</span><span>#F08DB9</span></div>
+      </div>
+    </div>
+
+    <div class="fp-row">
+      <span class="fp-label">002 · Melão Caos · BR</span>
+      <div class="fp-bar-wrap">
+        <div class="fp-bar" style="background:linear-gradient(90deg,#030303,#5F885B,#F7D050); --glow:rgba(247,208,80,0.4);"></div>
+        <div class="fp-bar-hex"><span>#030303</span><span>#5F885B</span><span>#F7D050</span></div>
+      </div>
+    </div>
+
+    <div class="fp-row">
+      <span class="fp-label">003 · Damasco Ritual · AR</span>
+      <div class="fp-bar-wrap">
+        <div class="fp-bar" style="background:linear-gradient(90deg,#030303,#6F4228,#D08430); --glow:rgba(208,132,48,0.45);"></div>
+        <div class="fp-bar-hex"><span>#030303</span><span>#6F4228</span><span>#D08430</span></div>
+      </div>
+    </div>
+
+    <div class="fp-row">
+      <span class="fp-label">004 · Elderflower Frost · NO</span>
+      <div class="fp-bar-wrap">
+        <div class="fp-bar" style="background:linear-gradient(90deg,#01020A,#233483,#C7D1DB); --glow:rgba(199,209,219,0.4);"></div>
+        <div class="fp-bar-hex"><span>#01020A</span><span>#233483</span><span>#C7D1DB</span></div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CLOSING TIMER -->
+<section id="closing-timer" data-screen-label="12 Timer">
+
+  <p class="ct-header">the hour that doesn't exist.</p>
+
+  <div class="ct-border-wrap">
+    <div class="ct-inner">
+      <span id="ct-display">25:00:00</span>
+      <span id="ct-yours">yours.</span>
+    </div>
+  </div>
+
+  <div class="ct-footer">
+    <span class="ct-brand">25h.</span>
+    <span class="ct-copy">© 25h · brand concept &amp; design · 2025</span>
+  </div>
+
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="lb-backdrop"></div>
+  <button id="lb-close" aria-label="Close image">✕</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" alt="">
+  </div>
+  <span id="lb-caption"></span>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="footer__brand">25h</span>
+  <span class="mono">the hour that doesn't exist · brand case study</span>
+  <span class="mono">© 25:00</span>
+</footer>
+
+<script>
+  // Reveal on intersection
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.reveal, .reveal--stagger').forEach(el => io.observe(el));
+
+  // Subtle parallax
+  const parallaxItems = document.querySelectorAll('[data-parallax]');
+  let raf = null;
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      parallaxItems.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const centerOffset = (rect.top + rect.height / 2) - vh / 2;
+        const speed = parseFloat(el.dataset.parallaxSpeed || '0.1');
+        const y = -centerOffset * speed;
+        el.style.transform = `translate3d(0, ${y}px, 0) scale(1.08)`;
+      });
+      raf = null;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── WORLD DOTS (mobile) ──
+  const worldDots = document.querySelectorAll('.world-dot');
+  function updateDots(idx) {
+    worldDots.forEach((d,i) => d.classList.toggle('active', i===idx));
+  }
+
+  // ── WORLD CAROUSEL ──
+  const worldTrack = document.getElementById('worldTrack');
+  const worldCards = [...worldTrack.querySelectorAll('.world-card')];
+  const worldFill  = document.getElementById('worldProgressFill');
+
+  function updateWorld() {
+    const cw = worldTrack.clientWidth;
+    const center = worldTrack.scrollLeft + cw / 2;
+    let closestIdx = 0, closestDist = Infinity;
+    worldCards.forEach((card, i) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(cardCenter - center);
+      if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+      card.classList.remove('wc-active');
+    });
+    worldCards[closestIdx].classList.add('wc-active');
+    const pct = worldCards.length > 1
+      ? 25 + (closestIdx / (worldCards.length - 1)) * 75
+      : 100;
+    worldFill.style.width = pct + '%';
+    updateDots(closestIdx);
+  }
+
+  worldTrack.addEventListener('scroll', updateWorld, { passive: true });
+
+  // drag-to-scroll (desktop)
+  let wDragging = false, wStartX = 0, wScrollLeft = 0;
+  worldTrack.addEventListener('mousedown', e => {
+    wDragging = true; worldTrack.classList.add('is-grabbing');
+    wStartX = e.pageX - worldTrack.offsetLeft;
+    wScrollLeft = worldTrack.scrollLeft;
+  });
+  ['mouseleave','mouseup'].forEach(ev =>
+    worldTrack.addEventListener(ev, () => { wDragging = false; worldTrack.classList.remove('is-grabbing'); })
+  );
+  worldTrack.addEventListener('mousemove', e => {
+    if (!wDragging) return;
+    e.preventDefault();
+    const x = e.pageX - worldTrack.offsetLeft;
+    worldTrack.scrollLeft = wScrollLeft - (x - wStartX) * 1.4;
+  });
+
+  updateWorld();
+
+  // fix: ensure card 0 is centered at scrollLeft=0
+  function fixWorldPadding() {
+    const cardW = worldCards[0].offsetWidth;
+    const sidePad = (worldTrack.clientWidth - cardW) / 2;
+    worldTrack.style.paddingLeft  = sidePad + 'px';
+    worldTrack.style.paddingRight = sidePad + 'px';
+    updateWorld();
+  }
+  fixWorldPadding();
+  window.addEventListener('resize', fixWorldPadding);
+
+  // ── CLOSING TIMER ──
+  const ctDisplay = document.getElementById('ct-display');
+  const ctYours   = document.getElementById('ct-yours');
+  let ctSeconds   = 25 * 3600;
+
+  function ctFmt(s) {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':');
+  }
+
+  function ctTick() {
+    if (ctSeconds <= 0) {
+      ctDisplay.style.opacity = '0';
+      setTimeout(() => { ctYours.style.opacity = '1'; }, 620);
+      return;
+    }
+    ctDisplay.textContent = ctFmt(ctSeconds);
+    ctSeconds--;
+    setTimeout(ctTick, 1000);
+  }
+
+  ctTick();
+
+  // ── HAMBURGER MENU ──
+  const navHamburger   = document.getElementById('navHamburger');
+  const mobileMenu     = document.getElementById('mobileMenu');
+  const mobileClose    = document.getElementById('mobileMenuClose');
+  const mobileBackdrop = document.getElementById('mobileMenuBackdrop');
+  function openMenu()  { mobileMenu.classList.add('open'); mobileMenu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+  function closeMenu() { mobileMenu.classList.remove('open'); mobileMenu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  navHamburger.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileBackdrop.addEventListener('click', closeMenu);
+  document.getElementById('mobileMenuLinks').querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // ── WORLD CUSTOM SCROLLBAR ──
+  const worldScrollbar = document.getElementById('worldScrollbar');
+  const worldThumb     = document.getElementById('worldThumb');
+
+  function updateThumb() {
+    if (!worldScrollbar) return;
+    const trackW      = worldScrollbar.clientWidth;
+    const scrollRatio = worldTrack.clientWidth / worldTrack.scrollWidth;
+    const thumbW      = Math.max(trackW * scrollRatio, 40);
+    const maxScroll   = worldTrack.scrollWidth - worldTrack.clientWidth;
+    const maxLeft     = trackW - thumbW;
+    const thumbLeft   = maxScroll > 0 ? (worldTrack.scrollLeft / maxScroll) * maxLeft : 0;
+    worldThumb.style.width = thumbW + 'px';
+    worldThumb.style.left  = thumbLeft + 'px';
+  }
+
+  // carousel → thumb
+  worldTrack.addEventListener('scroll', updateThumb, { passive: true });
+
+  // thumb → carousel (drag)
+  let wsDrag = false, wsStartX = 0, wsStartLeft = 0, wsStartScroll = 0;
+
+  worldThumb.addEventListener('mousedown', e => {
+    e.preventDefault();
+    wsDrag = true;
+    worldThumb.classList.add('ws-dragging');
+    wsStartX      = e.clientX;
+    wsStartLeft   = parseFloat(worldThumb.style.left) || 0;
+    wsStartScroll = worldTrack.scrollLeft;
+    worldTrack.style.scrollBehavior = 'auto';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!wsDrag) return;
+    const dx       = e.clientX - wsStartX;
+    const trackW   = worldScrollbar.clientWidth;
+    const thumbW   = parseFloat(worldThumb.style.width) || 40;
+    const maxLeft  = trackW - thumbW;
+    const maxScroll = worldTrack.scrollWidth - worldTrack.clientWidth;
+    const newLeft  = Math.max(0, Math.min(maxLeft, wsStartLeft + dx));
+    worldThumb.style.left  = newLeft + 'px';
+    worldTrack.scrollLeft  = maxLeft > 0 ? (newLeft / maxLeft) * maxScroll : 0;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!wsDrag) return;
+    wsDrag = false;
+    worldThumb.classList.remove('ws-dragging');
+    worldTrack.style.scrollBehavior = 'smooth';
+    // snap to nearest card
+    const center = worldTrack.scrollLeft + worldTrack.clientWidth / 2;
+    let snapIdx = 0, snapDist = Infinity;
+    worldCards.forEach((card, i) => {
+      const d = Math.abs((card.offsetLeft + card.offsetWidth / 2) - center);
+      if (d < snapDist) { snapDist = d; snapIdx = i; }
+    });
+    const card   = worldCards[snapIdx];
+    const target = card.offsetLeft - (worldTrack.clientWidth - card.offsetWidth) / 2;
+    worldTrack.scrollTo({ left: target, behavior: 'smooth' });
+    setTimeout(updateThumb, 320);
+  });
+
+  updateThumb();
+  window.addEventListener('resize', updateThumb);
+
+  // ── LIGHTBOX ──
+  const lb      = document.getElementById('lightbox');
+  const lbImg   = document.getElementById('lb-img');
+  const lbClose = document.getElementById('lb-close');
+  const lbBack  = document.getElementById('lb-backdrop');
+  const lbCap   = document.getElementById('lb-caption');
+
+  function openLb(src, alt) {
+    lbImg.src = src;
+    lbImg.alt = alt || '';
+    lbCap.textContent = alt || '';
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLb() {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { lbImg.src = ''; lbCap.textContent = ''; }, 380);
+  }
+
+  lbClose.addEventListener('click', closeLb);
+  lbBack.addEventListener('click', closeLb);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+  // attach to all flavor section images + world UGC cards
+  const lbTargets = [
+    '.flavor-split__right img',
+    '.flavor-split__left img',
+    '.flavor-grid__portrait img',
+    '.flavor-grid__square img',
+    '.can-system__img-wrap img'
+  ];
+  document.querySelectorAll(lbTargets.join(',')).forEach(img => {
+    img.addEventListener('click', () => openLb(img.src, img.alt));
+  });
+  // world cards: listener on card (img has pointer-events:none for drag)
+  document.querySelectorAll('.world-card').forEach(card => {
+    card.style.cursor = 'zoom-in';
+    card.addEventListener('click', () => {
+      const img = card.querySelector('img');
+      if (img) openLb(img.src, img.alt);
+    });
+  });
+</script>
+</body>
+</html>
